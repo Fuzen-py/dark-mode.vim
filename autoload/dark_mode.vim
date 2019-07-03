@@ -4,7 +4,7 @@
 " Version:    0.1
 " Maintainer: Fuzen<hello@fuzen.cafe>
 "
-"
+" NOTE: Currently only supports MacOS Mojave +
 "
 " MIT License
 
@@ -30,11 +30,6 @@
 " s:is_darwin: Check if system is MacOS {{{
 let s:is_darwin = (has("unix") && substitute(system("uname -s"), '\n','', 'g') ==? "Darwin")
 " }}}
-if !s:is_darwin | finish | endif " MacOS is supported for now
-" Set Defaults {{{
-
-" }}}
-" }}}
 " Script Functions {{{
 " Base osascript to Change system preference {{{
 let s:OSX_BASE_OSASCRIPT = "tell application \"System Events\" to tell appearance preferences to set dark mode to " " }}}
@@ -56,7 +51,6 @@ function! s:OSX_Detection_Callback(_, data, event)
 	endif
 endfunction
 " }}}
-" Functions in user space {{{
 " dark_mode#set_detected_theme(): Set vim background to match detected system theme {{{
 function! dark_mode#set_detected_theme()
 	" MacOS Detection {{{
@@ -64,9 +58,6 @@ function! dark_mode#set_detected_theme()
 		let job = jobstart(s:OSX_Get_Color_cmd, {'on_stdout': function('s:OSX_Detection_Callback'), 'stdout_buffered': 1})
 	endif " }}}
 endfunction
-
-
-
 " }}}
 " dark_mode#enable_watcher(interval: int) -> bool: Watch system theme for changes at set interval in ms {{{
 function! dark_mode#watcher(interval)
@@ -111,8 +102,4 @@ function! dark_mode#set_dark(on)
 		let s:dark_mode_timer = 0
 	endif " }}}
 endfunction " }}}
-
-" }}}
-" Match SystemTheme with Vim if g:dar_mode_sync is true
-autocmd ColorScheme * if g:dark_mode_sync | call dark_mode#set_dark((&background=="dark")) |endif
 " vim: tabstop=4:shiftwidth=4:softtabstop=4:noexpandtab:foldmethod=marker:

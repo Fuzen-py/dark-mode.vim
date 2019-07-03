@@ -4,7 +4,7 @@
 " Version:    0.1
 " Maintainer: Fuzen<hello@fuzen.cafe>
 "
-"
+" NOTE: Currently only supports MacOS Mojave +
 "
 " MIT License
 
@@ -35,4 +35,7 @@ let g:loaded_dark_mode='yes'
 if !exists('g:dark_mode_sync')
 	let g:dark_mode_sync = 0
 endif
+
+" Math system theme to vim background
+autocmd ColorScheme * if g:dark_mode_sync | call dark_mode#set_dark((&background=="dark")) | endif
 " vim: tabstop=4:shiftwidth=4:softtabstop=4:noexpandtab:foldmethod=marker:
