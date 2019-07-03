@@ -28,14 +28,10 @@
 " OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 " SOFTWARE.
 " s:is_darwin: Check if system is MacOS {{{
-let s:is_darwin = (has("unix") && system("uname -s") ==? "Darwin")
+let s:is_darwin = (has("unix") && substitute(system("uname -s"), '\n','', 'g') ==? "Darwin")
 " }}}
 if !s:is_darwin | finish | endif " MacOS is supported for now
 " Set Defaults {{{
-" g:dark_mode_sync: Set System theme to match vim's Background (Disabled By Default) {{{
-if empty('g:dark_mode_sync')
-	let g:dark_mode_sync = 0
-endif
 
 " }}}
 " }}}
@@ -44,7 +40,7 @@ endif
 let s:OSX_BASE_OSASCRIPT = "tell application \"System Events\" to tell appearance preferences to set dark mode to " " }}}
 " s:OSX_SetDark(on: bool):  Set MacOS Theme to Dark {{{
 function! s:OSX_SetDark(on)
-	execute("!osascript -e '" . s:OSX_BASE_OSASCRIPT . a:on ? "true": "false" . "'")
+	silent execute("!osascript -e '" . s:OSX_BASE_OSASCRIPT . (a:on ? "true": "false") . "'")
 endfunction " }}}
 " s:OSX_Get_Color_cmd: Command to get MacOS Theme {{{
 let s:OSX_Get_Color_cmd = "osascript -e 'tell app \"System Events\" to tell appearance preferences to return dark mode'" " }}}
@@ -74,7 +70,7 @@ endfunction
 " }}}
 " dark_mode#enable_watcher(interval: int) -> bool: Watch system theme for changes at set interval in ms {{{
 function! dark_mode#watcher(interval)
-	if empty("s:dark_mode_timer")
+	if exists("s:dark_mode_timer")
 		let s:dark_mode_timer = timer_start(a:interval, 'dark_mode#set_detected_theme', {'repeat': -1})
 		let s:dark_mode_timer_paused = 0
 		return 1
@@ -83,14 +79,14 @@ function! dark_mode#watcher(interval)
 endfunction " }}}
 " dark_mode#disable_watcher(): Disable System Watcher {{{
 function! dark_mode#disable_watcher()
-	if !empty("s:dark_mode_timer")
+	if !exists("s:dark_mode_timer")
 		unlet s:dark_mode_timer
 		unlet s:dark_mode_timer_paused
 	endif
 endfunctio " }}}
 " dark_mode#pause_watcher(): Pause/Unpause System Watcher {{{
 function! dark_mode#pause_watcher()
-	if !empty("s:dark_mode_timer")
+	if !exists("s:dark_mode_timer")
 		call timer_pause(s:dark_mode_timer)
 		let s:dark_mode_timer_paused = 1
 	endif
@@ -101,7 +97,7 @@ function! dark_mode#set_dark(on)
 	if exists('s:dark_mode_timer_paused')
 		if !s:dark_mdoe_timer_paused
 			call timer_pause(s:dark_mode_timer)
-			let s:_set_pause
+			let s:_set_pause = 1
 			let s:dark_mode_timer_paused = 1
 		endif
 	endif " }}}
@@ -110,11 +106,11 @@ function! dark_mode#set_dark(on)
 		call s:OSX_SetDark(a:on)
 	endif " }}}
 	" ResumeTimer if paused {{{
-	if exists('s:_set_pause') && exists(s:dar_mode_timer)
+	if exists('s:_set_pause') && exists('s:dark_mode_timer')
 		call timer_pause(s:dark_mode_timer)
 		let s:dark_mode_timer = 0
 	endif " }}}
-endif " }}}
+endfunction " }}}
 
 " }}}
 " Match SystemTheme with Vim if g:dar_mode_sync is true

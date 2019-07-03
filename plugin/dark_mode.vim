@@ -28,6 +28,11 @@
 " OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 " SOFTWARE.
 if exists('g:loaded_dark_mode')
-  finish
+	finish
 endif
 let g:loaded_dark_mode='yes'
+" g:dark_mode_sync: Set System theme to match vim's Background (Disabled By Default) {{{
+if !exists('g:dark_mode_sync')
+	let g:dark_mode_sync = 0
+endif
+" vim: tabstop=4:shiftwidth=4:softtabstop=4:noexpandtab:foldmethod=marker:
