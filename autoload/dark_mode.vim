@@ -152,7 +152,7 @@ function! dark_mode#time_in_mills(hours, minutes, seconds)
 		let a:seconds = strftime('%S')
 	endif " }}}
 	return (a:hours * 3600 + a:minutes * 60 + a:seconds) * 1000
-endif " }}}
+endfunction " }}}
 " dark_mode#time_difference(current, future) -> difference_in_mills {{{
 function! dark_mode#time_difference(current, future)
 	return (current-future) + (current > future) ? 0: s:new_day_offset
