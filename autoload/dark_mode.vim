@@ -35,7 +35,7 @@
 " TODO: Write docs
 "
 " s:is_darwin: Check if system is MacOS {{{
-let s:is_darwin = (has("unix") && substitute(system("uname -s"), '\n','', 'g') ==? "Darwin")
+let s:is_darwin = executable("xcode-select")
 " }}}
 " Core Script Definitions {{{
 let s:new_day_offset = 86400000 " 24H in mills
