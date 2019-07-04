@@ -56,5 +56,5 @@ if !exists("g:dark_mode#night")
 	let g:dark_mode#night[0] += (g:dark_mode#night[0] <= 18) ? 5 : -5
 endif
 " Math system theme to vim background
-autocmd ColorScheme * if g:dark_mode_sync | call dark_mode#set_dark((&background=="dark")) | endif
+autocmd ColorScheme * if g:dark_mode#sync | call dark_mode#set_dark((&background=="dark")) | endif
 " vim: tabstop=4:shiftwidth=4:softtabstop=4:noexpandtab:foldmethod=indent:
