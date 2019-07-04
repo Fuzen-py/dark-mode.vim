@@ -134,7 +134,7 @@ function! dark_mode#daylight_watcher(set_state)
 	let night = dark_mode#time_in_mills(g:dark_mode#night[0], g:dark_mode#night[1], g:dark_mode#night[2])
 
 	let is_day = (current < night && current > day )
-	let next = (is_day) ? night : day
+	let next = dark_mode#time_difference(current, (is_day) ? night : day)
 	let &background = (is_day) ? 'light' : 'dark'
 	let s:daylight_timer = timer_start(next, 'dark_mode#daylight_watcher')
 endfunction
