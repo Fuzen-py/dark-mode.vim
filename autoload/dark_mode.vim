@@ -94,7 +94,7 @@ function! dark_mode#set_dark(on)
 	if exists('s:dark_mode#timer_paused')
 		if !s:dark_mdoe_timer_paused
 			call timer_pause(s:dark_mode#timer)
-			let s:_set_pause = 1
+			let set_pause = 1
 			let s:dark_mode#timer_paused = 1
 		endif
 	endif " }}}
@@ -103,7 +103,7 @@ function! dark_mode#set_dark(on)
 		call s:OSX_SetDark(a:on)
 	endif " }}}
 	" ResumeTimer if paused {{{
-	if exists('s:_set_pause') && exists('s:dark_mode#timer')
+	if exists('set_pause') && exists('s:dark_mode#timer')
 		call timer_pause(s:dark_mode#timer)
 		let s:dark_mode#timer = 0
 	endif " }}}
@@ -113,7 +113,7 @@ function! dark_mode#set_by_time()
 	let current = dark_mode#time_in_mills('','','')
 	let day = dark_mode#time_in_mills(g:dark_mode#day[0], g:dark_mode#day[1], g:dark_mode#day[2])
 	let night = dark_mode#time_in_mills(g:dark_mode#night[0], g:dark_mode#night[1], g:dark_mode#night[2])
-	call dark_mode#set_dark(current < day && current > night)
+	set background = (current < night && current > day ) ? 'light' : 'dark'
 endfunction " }}}
 " dark_mode#daylight_watcher("on"/"off") - Enable / Disable daylight watcher {{{
 function! dark_mode#daylight_watcher(set_state)
@@ -133,7 +133,7 @@ function! dark_mode#daylight_watcher(set_state)
 
 	let is_day = (current < night && current > day )
 	let next = (is_day) ? night : day
-	call dark_mode#set_dark(!is_day)
+	set background = (is_day) ? 'light' : 'dark'
 	let s:daylight_timer = timer_start(next, 'dark_mode#daylight_watcher')
 endfunction
 
