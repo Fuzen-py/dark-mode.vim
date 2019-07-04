@@ -129,7 +129,7 @@ function! dark_mode#daylight_watcher(set_state)
 	endif
 	let current = dark_mode#time_in_mills('','','')
 	let day = dark_mode#time_in_mills(g:dark_mode#day[0], g:dark_mode#day[1], g:dark_mode#day[2])
-	let night = dark_mode#time_in_mills(g:dark_mode#night[0], g:darl_mode#night[1], g:dark_mode#night[2])
+	let night = dark_mode#time_in_mills(g:dark_mode#night[0], g:dark_mode#night[1], g:dark_mode#night[2])
 
 	let is_day = (current < night && current > day )
 	let next = (is_day) ? night : day
@@ -142,16 +142,10 @@ endfunction
 " dark_mode#time_in_mills(hours, mintues, seconds) -> time_in_mills {{{
 function! dark_mode#time_in_mills(hours, minutes, seconds)
 	" Defaults to strftime fields {{{
-	if empty(a:hours)
-		let a:hours = strftime('%H')
-	endif
-	if empty(a:minutes)
-		let a:minutes = strftime('%M')
-	endif
-	if empty(a:seconds)
-		let a:seconds = strftime('%S')
-	endif " }}}
-	return (a:hours * 3600 + a:minutes * 60 + a:seconds) * 1000
+	let hours =   empty(a:hours)   ? strftime('%H') : a:hours
+	let minutes = empty(a:minutes) ? strftime('%M') : a:minutes
+	let seconds = empty(a:seconds) ? strftime('%S') : a:seconds
+	return (hours * 3600 + minutes * 60 + seconds) * 1000
 endfunction " }}}
 " dark_mode#time_difference(current, future) -> difference_in_mills {{{
 function! dark_mode#time_difference(current, future)
