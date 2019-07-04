@@ -1,8 +1,9 @@
 " Dark Mode
 " Attemtps to detect system's darkmode and synchronize it
 "
-" Version:    0.1
+" Version:    0.2
 " Maintainer: Fuzen<hello@fuzen.cafe>
+" File: plugin/dark_mode.vim
 "
 " NOTE: Currently only supports MacOS Mojave +
 "

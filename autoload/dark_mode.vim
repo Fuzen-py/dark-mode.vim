@@ -2,9 +2,10 @@
 " Attemtps to detect system's darkmode and synchronize it
 " Also supports changes by time of day
 "
-" Version:    0.1
+" Version:    0.2
 " Maintainer: Fuzen<hello@fuzen.cafe>
-"
+" File: autoload/dark_mode.vim
+
 " NOTE: Currently only supports MacOS Mojave +
 "
 " MIT License
@@ -30,6 +31,7 @@
 " SOFTWARE.
 "
 " TODO: Add Day/Night colorscheme
+" TODO: Set optionally time base as fallback for dark_mode#enable_watcher
 " TODO: Write docs
 "
 " s:is_darwin: Check if system is MacOS {{{
