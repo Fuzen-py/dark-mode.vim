@@ -112,18 +112,18 @@ endfunction " }}}
 function! dark_mode#set_by_time()
 	let current = dark_mode#time_in_mills('','','')
 	let day = dark_mode#time_in_mills(g:dark_mode#day[0], g:dark_mode#day[1], g:dark_mode#day[2])
-	let night = dark_mode#time_in_mills(g:dark_mode#night[0], g:darl_mode#night[1], g:dark_mode#night[2])
+	let night = dark_mode#time_in_mills(g:dark_mode#night[0], g:dark_mode#night[1], g:dark_mode#night[2])
 	call dark_mode#set_dark(current < day && current > night)
 endfunction " }}}
 " dark_mode#daylight_watcher("on"/"off") - Enable / Disable daylight watcher {{{
 function! dark_mode#daylight_watcher(set_state)
 	if !exists('s:daylight_timer')
-		if (set_state !=? "on")
+		if (a:set_state !=? "on")
 			return 0
 		endif
-	elseif set_state ==? "off"
+	elseif a:set_state ==? "off"
 		return timer_stop(s:daylight_timer)
-	elseif type(set_state) != type(0)
+	elseif type(a:set_state) != type(0)
 		echoerr "Invalid argument for dark_mode#daylight_watcher, valid options are [\"on\", \"off\"]"
 		return 0
 	endif
@@ -134,7 +134,7 @@ function! dark_mode#daylight_watcher(set_state)
 	let is_day = (current < night && current > day )
 	let next = (is_day) ? night : day
 	call dark_mode#set_dark(!is_day)
-	let s:daylight_timer = timer_start(next, 's:timer_watcher')
+	let s:daylight_timer = timer_start(next, 'dark_mode#daylight_watcher')
 endfunction
 
 
