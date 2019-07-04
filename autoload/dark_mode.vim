@@ -1,5 +1,6 @@
 " Dark Mode
 " Attemtps to detect system's darkmode and synchronize it
+" Also supports changes by time of day
 "
 " Version:    0.1
 " Maintainer: Fuzen<hello@fuzen.cafe>
@@ -27,10 +28,15 @@
 " LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 " OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 " SOFTWARE.
+"
+" TODO: Add Day/Night colorscheme
+" TODO: Write docs
+"
 " s:is_darwin: Check if system is MacOS {{{
 let s:is_darwin = (has("unix") && substitute(system("uname -s"), '\n','', 'g') ==? "Darwin")
 " }}}
-" Script Functions {{{
+" Core Script Definitions {{{
+let s:new_day_offset = 86400000 " 24H in mills
 " Base osascript to Change system preference {{{
 let s:OSX_BASE_OSASCRIPT = "tell application \"System Events\" to tell appearance preferences to set dark mode to " " }}}
 " s:OSX_SetDark(on: bool):  Set MacOS Theme to Dark {{{
@@ -61,35 +67,35 @@ endfunction
 " }}}
 " dark_mode#enable_watcher(interval: int) -> bool: Watch system theme for changes at set interval in ms {{{
 function! dark_mode#watcher(interval)
-	if exists("s:dark_mode_timer")
-		let s:dark_mode_timer = timer_start(a:interval, 'dark_mode#set_detected_theme', {'repeat': -1})
-		let s:dark_mode_timer_paused = 0
+	if exists("s:dark_mode#timer")
+		let s:dark_mode#timer = timer_start(a:interval, 'dark_mode#set_detected_theme', {'repeat': -1})
+		let s:dark_mode#timer_paused = 0
 		return 1
 	endif
 	return 0
 endfunction " }}}
 " dark_mode#disable_watcher(): Disable System Watcher {{{
 function! dark_mode#disable_watcher()
-	if !exists("s:dark_mode_timer")
-		unlet s:dark_mode_timer
-		unlet s:dark_mode_timer_paused
+	if !exists("s:dark_mode#timer")
+		unlet s:dark_mode#timer
+		unlet s:dark_mode#timer_paused
 	endif
 endfunctio " }}}
 " dark_mode#pause_watcher(): Pause/Unpause System Watcher {{{
 function! dark_mode#pause_watcher()
-	if !exists("s:dark_mode_timer")
-		call timer_pause(s:dark_mode_timer)
-		let s:dark_mode_timer_paused = 1
+	if !exists("s:dark_mode#timer")
+		call timer_pause(s:dark_mode#timer)
+		let s:dark#mode_timer_paused = 1
 	endif
 endfunction " }}}
 " dark_mode#set_dark(on: bool): Set Theme to dark if on is true {{{
 function! dark_mode#set_dark(on)
 	" Pause Timer if exists {{{
-	if exists('s:dark_mode_timer_paused')
+	if exists('s:dark_mode#timer_paused')
 		if !s:dark_mdoe_timer_paused
-			call timer_pause(s:dark_mode_timer)
+			call timer_pause(s:dark_mode#timer)
 			let s:_set_pause = 1
-			let s:dark_mode_timer_paused = 1
+			let s:dark_mode#timer_paused = 1
 		endif
 	endif " }}}
 	" MacOS {{{
@@ -97,9 +103,59 @@ function! dark_mode#set_dark(on)
 		call s:OSX_SetDark(a:on)
 	endif " }}}
 	" ResumeTimer if paused {{{
-	if exists('s:_set_pause') && exists('s:dark_mode_timer')
-		call timer_pause(s:dark_mode_timer)
-		let s:dark_mode_timer = 0
+	if exists('s:_set_pause') && exists('s:dark_mode#timer')
+		call timer_pause(s:dark_mode#timer)
+		let s:dark_mode#timer = 0
 	endif " }}}
 endfunction " }}}
+" dark_mode#set_by_time() - Sets day / night by time of day {{{
+function! dark_mode#set_by_time()
+	let current = dark_mode#time_in_mills('','','')
+	let day = dark_mode#time_in_mills(g:dark_mode#day[0], g:dark_mode#day[1], g:dark_mode#day[2])
+	let night = dark_mode#time_in_mills(g:dark_mode#night[0], g:darl_mode#night[1], g:dark_mode#night[2])
+	call dark_mode#set_dark(current < day && current > night)
+endfunction " }}}
+" dark_mode#daylight_watcher("on"/"off") - Enable / Disable daylight watcher {{{
+function! dark_mode#daylight_watcher(set_state)
+	if !exists('s:daylight_timer')
+		if (set_state !=? "on")
+			return 0
+		endif
+	elseif set_state ==? "off"
+		return timer_stop(s:daylight_timer)
+	elseif type(set_state) != type(0)
+		echoerr "Invalid argument for dark_mode#daylight_watcher, valid options are [\"on\", \"off\"]"
+		return 0
+	endif
+	let current = dark_mode#time_in_mills('','','')
+	let day = dark_mode#time_in_mills(g:dark_mode#day[0], g:dark_mode#day[1], g:dark_mode#day[2])
+	let night = dark_mode#time_in_mills(g:dark_mode#night[0], g:darl_mode#night[1], g:dark_mode#night[2])
+
+	let is_day = (current < night && current > day )
+	let next = (is_day) ? night : day
+	call dark_mode#set_dark(!is_day)
+	let s:daylight_timer = timer_start(next, 's:timer_watcher')
+endfunction
+
+
+" }}}
+" dark_mode#time_in_mills(hours, mintues, seconds) -> time_in_mills {{{
+function! dark_mode#time_in_mills(hours, minutes, seconds)
+	" Defaults to strftime fields {{{
+	if empty(a:hours)
+		let a:hours = strftime('%H')
+	endif
+	if empty(a:minutes)
+		let a:minutes = strftime('%M')
+	endif
+	if empty(a:seconds)
+		let a:seconds = strftime('%S')
+	endif " }}}
+	return (a:hours * 3600 + a:minutes * 60 + a:seconds) * 1000
+endif " }}}
+" dark_mode#time_difference(current, future) -> difference_in_mills {{{
+function! dark_mode#time_difference(current, future)
+	return (current-future) + (current > future) ? 0: s:new_day_offset
+endfunction
+" }}}
 " vim: tabstop=4:shiftwidth=4:softtabstop=4:noexpandtab:foldmethod=marker:
