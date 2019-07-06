@@ -6,7 +6,7 @@
 " Maintainer: Fuzen<hello@fuzen.cafe>
 " File: autoload/dark_mode.vim
 
-" NOTE: Currently only supports MacOS Mojave +
+" NOTE: OS theme dectection is currently only supports MacOS Mojave or newer
 "
 " MIT License
 
@@ -33,6 +33,7 @@
 " TODO: Add Day/Night colorscheme
 " TODO: Set optionally time base as fallback for dark_mode#enable_watcher
 " TODO: Write docs
+" TODO: Add support for GTK/QT/Windows
 "
 " s:is_darwin: Check if system is MacOS {{{
 let s:is_darwin = executable("xcode-select")
@@ -147,6 +148,7 @@ function! dark_mode#time_in_mills(hours, minutes, seconds)
 	let hours =   empty(a:hours)   ? strftime('%H') : a:hours
 	let minutes = empty(a:minutes) ? strftime('%M') : a:minutes
 	let seconds = empty(a:seconds) ? strftime('%S') : a:seconds
+	"}}}
 	return (hours * 3600 + minutes * 60 + seconds) * 1000
 endfunction " }}}
 " dark_mode#time_difference(current, future) -> difference_in_mills {{{
