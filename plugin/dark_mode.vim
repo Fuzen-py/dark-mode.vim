@@ -39,15 +39,9 @@ if !exists('g:dark_mode#sync')
 	let g:dark_mode#sync = 0
 endif
 " g:dark_mode_day: When day time begins [hours, minutes, seconds]
-" If g:dark_mode#night is set and day is not, sets to g:dark_mode#night - 5h
-" Otherwise defaults to [09,30,0]
+" defaults to [09,30,0]
 if !exists("g:dark_mode#day")
-	if exists("g:dark_mode#night")
-		let g:dark_mode#day = g:dark_mode#night
-		let g:dark_mdoe#day[0] -= (g:dark_mode#day[0] => 5 ) ? 5 : -5
-	else
-		let g:dark_mode#day = [09,30,0]
-	endif
+	let g:dark_mode#day = [09,30,0]
 endif
 
 " g:dark_mode#night: When the night begins [hours, minutes, seconds]
