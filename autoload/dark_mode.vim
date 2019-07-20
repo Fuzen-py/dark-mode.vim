@@ -107,9 +107,9 @@ function! dark_mode#set_dark(on)
 	endif " }}}
 	" Vim ColorScheme {{{
 	if &bg=="dark" && !empty("g:dark_mode#dark_colorscheme")
-		colorscheme g:dark_mode#dark_colorscheme
+		call execute('colorscheme ' . g:dark_mode#dark_colorscheme)
 	elseif &bg=="light" && !empty("g:dark_mode#light_colorscheme")
-		colorscheme g:dark_mode#light_colorscheme
+		call execute('colorscheme '. g:dark_mode#light_colorscheme)
 	endif " }}}
 	" ResumeTimer if paused {{{
 	if exists('set_pause') && exists('s:dark_mode#timer')

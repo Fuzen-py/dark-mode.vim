@@ -55,11 +55,11 @@ if !exists("g:dark_mode#night")
 endif " }}}
 " g:dark_mode#dark_colorscheme: Dark mode colorscheme, if set uses this theme when bg=dark {{{
 if !exists("g:dark_mode#dark_colorscheme")
-	let g:dark_mode#dark_colorscheme = ""
+	let g:dark_mode#dark_colorscheme = execute("colorscheme")
 endif " }}}
 " g:dark_mode#light_colorscheme: light mode colorscheme, if set uses this theme when bg=light {{{
 if !exists("g:dark_mode#light_colorscheme")
-	let g:dark_mode#light_colorscheme = ""
+	let g:dark_mode#light_colorscheme = execute("colorscheme")
 endif " }}}
 " Math system theme to vim background
 autocmd ColorScheme * if g:dark_mode#sync | call dark_mode#set_dark((&background=="dark")) | endif
