@@ -105,6 +105,12 @@ function! dark_mode#set_dark(on)
 	if s:is_darwin
 		call s:OSX_SetDark(a:on)
 	endif " }}}
+	" Vim ColorScheme {{{
+	if &bg=="dark" && !empty("g:dark_mode#dark_colorscheme")
+		colorscheme g:dark_mode#dark_colorscheme
+	elseif &bg=="light" && !empty("g:dark_mode#light_colorscheme")
+		colorscheme g:dark_mode#light_colorscheme
+	endif " }}}
 	" ResumeTimer if paused {{{
 	if exists('set_pause') && exists('s:dark_mode#timer')
 		call timer_pause(s:dark_mode#timer)

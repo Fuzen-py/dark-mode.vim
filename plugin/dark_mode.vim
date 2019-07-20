@@ -6,6 +6,11 @@
 " File: plugin/dark_mode.vim
 "
 " NOTE: Currently only supports MacOS Mojave +
+" TODO [HIGH]: Add Linux Gnome Support
+" TODO [HIGH]: Add Linux QT Support
+" TODO  [LOW]: Windows support
+" TODO  [MED]: Fallback to time
+" TODO [HIGH]: Support colorscheme change for light/dark
 "
 " MIT License
 
@@ -28,28 +33,34 @@
 " LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 " OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 " SOFTWARE.
+
 " Plugin load script {{{
 if exists('g:loaded_dark_mode')
 	finish
 endif
 let g:loaded_dark_mode='yes'
 " }}}
-" g:dark_mode_sync: Set System theme to match vim's Background (Disabled By Default)
+" g:dark_mode_sync: Set System theme to match vim's Background (Disabled By Default) {{{
 if !exists('g:dark_mode#sync')
 	let g:dark_mode#sync = 0
-endif
-" g:dark_mode_day: When day time begins [hours, minutes, seconds]
-" defaults to [09,30,0]
+endif " }}}
+" g:dark_mode_day: When day time begins [hours, minutes, seconds] defaults to [09,30,0] {{{
 if !exists("g:dark_mode#day")
 	let g:dark_mode#day = [09,30,0]
-endif
-
-" g:dark_mode#night: When the night begins [hours, minutes, seconds]
-" Defaults to g:dark_mode#day + 5h
+endif "}}}
+" g:dark_mode#night: When the night begins [hours, minutes, seconds] Defaults to g:dark_mode#day + 5h {{{
 if !exists("g:dark_mode#night")
 	let g:dark_mode#night = g:dark_mode#day
 	let g:dark_mode#night[0] += (g:dark_mode#night[0] <= 18) ? 5 : -5
-endif
+endif " }}}
+" g:dark_mode#dark_colorscheme: Dark mode colorscheme, if set uses this theme when bg=dark {{{
+if !exists("g:dark_mode#dark_colorscheme")
+	let g:dark_mode#dark_colorscheme = ""
+endif " }}}
+" g:dark_mode#light_colorscheme: light mode colorscheme, if set uses this theme when bg=light {{{
+if !exists("g:dark_mode#light_colorscheme")
+	let g:dark_mode#light_colorscheme = ""
+endif " }}}
 " Math system theme to vim background
 autocmd ColorScheme * if g:dark_mode#sync | call dark_mode#set_dark((&background=="dark")) | endif
-" vim: tabstop=4:shiftwidth=4:softtabstop=4:noexpandtab:foldmethod=indent:
+" vim: tabstop=4:shiftwidth=4:softtabstop=4:noexpandtab:foldmethod=marker:
